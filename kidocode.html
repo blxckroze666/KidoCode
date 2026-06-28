@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidoCode - Learn to Build Pages</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 50%, #ff922b 100%);
+            color: #1a202c;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* HOME PAGE */
+        .home-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .home-page h1 {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: white;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            letter-spacing: -1px;
+        }
+
+        .home-page p {
+            font-size: 18px;
+            color: rgba(255,255,255,0.95);
+            margin-bottom: 60px;
+            font-weight: 500;
+        }
+
+        .lesson-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .lesson-card {
+            background: white;
+            border-radius: 16px;
+            padding: 36px 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            border: 3px solid transparent;
+            text-align: center;
+            position: relative;
+        }
+
+        .lesson-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ff6b6b 0%, #ff922b 100%);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+            border-color: #ff6b6b;
+        }
+
+        .lesson-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .lesson-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .lesson-desc {
+            font-size: 14px;
+            color: #57606f;
+            line-height: 1.5;
+        }
+
+        /* LESSON PAGE */
+        .lesson-page {
+            display: none;
+        }
+
+        .lesson-page.active {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: #f8f9fa;
+        }
+
+        .header {
+            background: white;
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #ff6b6b;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff922b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff922b 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+        }
+
+        /* EXPLANATION */
+        .explanation-box {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(255, 146, 43, 0.1) 100%);
+            border-left: 5px solid #ff6b6b;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        .explanation-box h3 {
+            font-size: 14px;
+            font-weight: 800;
+            color: #ff6b6b;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .explanation-box p {
+            font-size: 14px;
+            color: #2c3e50;
+            line-height: 1.7;
+        }
+
+        /* MAIN CONTENT */
+        .content-wrapper {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+            margin-bottom: 20px;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        .editor-section, .preview-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border: 1px solid #e0e6ed;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-section {
+            flex: 1;
+        }
+
+        .preview-section {
+            flex: 1;
+        }
+
+        .section-title {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff922b 100%);
+            padding: 14px 16px;
+            font-size: 12px;
+            font-weight: 800;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* CODE EDITOR */
+        .editor-content {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            padding: 18px;
+            border: none;
+            font-family: 'SF Mono', 'Monaco', monospace;
+            font-size: 14px;
+            resize: none;
+            color: #1a202c;
+            line-height: 1.8;
+            background: white;
+        }
+
+        textarea:focus {
+            outline: none;
+            background: #f8f9ff;
+        }
+
+        /* PREVIEW */
+        .preview-content {
+            flex: 1;
+            padding: 20px;
+            overflow: auto;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 6px;
+            background: white;
+        }
+
+        /* TEMPLATES */
+        .templates-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border: 1px solid #e0e6ed;
+            margin: 0 20px 20px 20px;
+        }
+
+        .panel-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: #ff6b6b;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .template-btn {
+            display: block;
+            width: 100%;
+            background: #f8f9fa;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 14px;
+            color: #2c3e50;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .template-btn:hover {
+            background: #f0f4f8;
+            border-color: #ff6b6b;
+            transform: translateX(4px);
+        }
+
+        .template-btn:last-child {
+            margin-bottom: 0;
+        }
+
+        /* BUTTONS */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 20px;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        .big-btn {
+            padding: 14px 32px;
+            font-size: 14px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff922b 100%);
+        }
+
+        .run-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .reset-btn {
+            background: #cbd5e0;
+            color: #1a202c;
+        }
+
+        .reset-btn:hover {
+            background: #a0aec0;
+        }
+
+        /* CHAT */
+        .chat-sidebar {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            border-left: 1px solid #e0e6ed;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.3s;
+            z-index: 999;
+            box-shadow: -4px 0 16px rgba(0,0,0,0.12);
+        }
+
+        .chat-sidebar.open {
+            right: 0;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff922b 100%);
+            color: white;
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .chat-close {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .message {
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .message.user {
+            background: #ff6b6b;
+            color: white;
+            margin-left: 30px;
+            text-align: right;
+        }
+
+        .message.bot {
+            background: #fff3e0;
+            color: #2c3e50;
+            margin-right: 30px;
+        }
+
+        .chat-input {
+            padding: 14px;
+            border-top: 1px solid #e0e6ed;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .chat-input input:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            background: #fffaf5;
+        }
+
+        .chat-input button {
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff922b 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .chat-toggle {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff922b 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 998;
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+            transition: all 0.2s;
+            font-weight: 700;
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.12);
+        }
+
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .lesson-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HOME PAGE -->
+    <div id="homePage" class="home-page">
+        <h1>KidoCode</h1>
+        <p>Build your first webpage - It's easy and fun!</p>
+        
+        <div class="lesson-grid">
+            <div class="lesson-card" onclick="startLesson(0)">
+                <div class="lesson-icon">🎨</div>
+                <div class="lesson-title">My First Page</div>
+                <div class="lesson-desc">Build your very first webpage</div>
+            </div>
+            
+            <div class="lesson-card" onclick="startLesson(1)">
+                <div class="lesson-icon">✍️</div>
+                <div class="lesson-title">Add Text</div>
+                <div class="lesson-desc">Write words and titles</div>
+            </div>
+            
+            <div class="lesson-card" onclick="startLesson(2)">
+                <div class="lesson-icon">🌈</div>
+                <div class="lesson-title">Add Colors</div>
+                <div class="lesson-desc">Make pages colorful</div>
+            </div>
+            
+            <div class="lesson-card" onclick="startLesson(3)">
+                <div class="lesson-icon">🎯</div>
+                <div class="lesson-title">Organize</div>
+                <div class="lesson-desc">Arrange things nicely</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LESSON PAGE -->
+    <div id="lessonPage" class="lesson-page">
+        <div class="container">
+            <div class="header">
+                <h1 id="lessonTitle">My First Page</h1>
+                <button class="back-btn" onclick="goHome()">Back Home</button>
+            </div>
+
+            <!-- EXPLANATION -->
+            <div class="explanation-box">
+                <h3>Learn This Lesson</h3>
+                <p id="lessonExplanation">Learn how to build web pages</p>
+            </div>
+
+            <!-- TEMPLATES -->
+            <div class="templates-panel">
+                <div class="panel-title">Try These Examples</div>
+                <div id="templatesList"></div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="content-wrapper">
+                <!-- EDITOR -->
+                <div class="editor-section">
+                    <div class="section-title">Your Code</div>
+                    <div class="editor-content">
+                        <textarea id="codeEditor" placeholder="Your code will appear here..."></textarea>
+                    </div>
+                </div>
+
+                <!-- PREVIEW -->
+                <div class="preview-section">
+                    <div class="section-title">Your Page</div>
+                    <div class="preview-content">
+                        <iframe id="preview" class="preview-frame" srcdoc=""></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="big-btn run-btn" onclick="updatePreview()">See Your Page</button>
+                <button class="big-btn reset-btn" onclick="resetLesson()">Start Over</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="chat-sidebar" id="chatSidebar">
+        <div class="chat-header">
+            <span>Helper</span>
+            <button class="chat-close" onclick="toggleChat()">✕</button>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Ask for help..." onkeypress="handleChatKeyPress(event)">
+            <button onclick="sendChat()">Ask</button>
+        </div>
+    </div>
+
+    <button class="chat-toggle" onclick="toggleChat()">?</button>
+
+    <script>
+        const lessons = [
+            {
+                title: "My First Page",
+                explanation: "Every webpage starts with basic HTML. Think of it like building blocks. You put text, colors, and other things together to create a page. Let's start simple!",
+                templates: [
+                    { label: "Simple Hello World", code: "<!DOCTYPE html>\n<html>\n<body>\n<h1>Hello World!</h1>\n<p>This is my first page.</p>\n</body>\n</html>" },
+                    { label: "About Me", code: "<!DOCTYPE html>\n<html>\n<body>\n<h1>About Me</h1>\n<p>My name is [your name]</p>\n<p>I like to code!</p>\n</body>\n</html>" },
+                    { label: "My Favorites", code: "<!DOCTYPE html>\n<html>\n<body>\n<h1>My Favorite Things</h1>\n<p>I like pizza</p>\n<p>I like games</p>\n<p>I like coding</p>\n</body>\n</html>" }
+                ]
+            },
+            {
+                title: "Add Text",
+                explanation: "You can add different sizes of text. Big text is for titles (h1, h2, h3). Small text is for regular words (p). Try using different sizes to organize your page!",
+                templates: [
+                    { label: "Different Text Sizes", code: "<!DOCTYPE html>\n<html>\n<body>\n<h1>BIG TITLE</h1>\n<h2>Medium Title</h2>\n<p>Regular text goes here</p>\n</body>\n</html>" },
+                    { label: "My Story", code: "<!DOCTYPE html>\n<html>\n<body>\n<h1>My Day</h1>\n<p>This morning I woke up.</p>\n<p>I had breakfast.</p>\n<p>Then I went to school.</p>\n</body>\n</html>" },
+                    { label: "List of Things", code: "<!DOCTYPE html>\n<html>\n<body>\n<h1>Things I Can Do</h1>\n<ul>\n<li>Read</li>\n<li>Write</li>\n<li>Code</li>\n</ul>\n</body>\n</html>" }
+                ]
+            },
+            {
+                title: "Add Colors",
+                explanation: "Colors make pages look cool! You can change the background color and the text color. Use color names like red, blue, green, or yellow. Let's make your page colorful!",
+                templates: [
+                    { label: "Colorful Background", code: "<!DOCTYPE html>\n<html>\n<head>\n<style>\nbody { background-color: lightblue; }\n</style>\n</head>\n<body>\n<h1>My Colorful Page</h1>\n</body>\n</html>" },
+                    { label: "Colored Text", code: "<!DOCTYPE html>\n<html>\n<head>\n<style>\nh1 { color: red; }\np { color: blue; }\n</style>\n</head>\n<body>\n<h1>Red Title</h1>\n<p>Blue text here</p>\n</body>\n</html>" },
+                    { label: "Rainbow Page", code: "<!DOCTYPE html>\n<html>\n<head>\n<style>\nbody { background-color: lightyellow; }\nh1 { color: red; }\n</style>\n</head>\n<body>\n<h1>Rainbow Page</h1>\n<p>This page is colorful!</p>\n</body>\n</html>" }
+                ]
+            },
+            {
+                title: "Organize",
+                explanation: "You can arrange things on your page using special containers called divs. This helps make your page look organized and neat. It's like organizing toys in boxes!",
+                templates: [
+                    { label: "Two Side by Side", code: "<!DOCTYPE html>\n<html>\n<head>\n<style>\n.box { width: 40%; padding: 20px; border: 1px solid black; }\n</style>\n</head>\n<body>\n<div class=\"box\">Left Side</div>\n<div class=\"box\">Right Side</div>\n</body>\n</html>" },
+                    { label: "Centered Box", code: "<!DOCTYPE html>\n<html>\n<head>\n<style>\n.center { width: 300px; padding: 20px; margin: 0 auto; background: lightgray; }\n</style>\n</head>\n<body>\n<div class=\"center\"><h1>Centered</h1></div>\n</body>\n</html>" },
+                    { label: "Card Design", code: "<!DOCTYPE html>\n<html>\n<head>\n<style>\n.card { width: 250px; padding: 20px; border: 1px solid gray; border-radius: 10px; }\n</style>\n</head>\n<body>\n<div class=\"card\"><h2>Card</h2><p>Content here</p></div>\n</body>\n</html>" }
+                ]
+            }
+        ];
+
+        let currentLesson = 0;
+
+        function startLesson(index) {
+            currentLesson = index;
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('lessonPage').classList.add('active');
+            renderLesson();
+            initChat();
+        }
+
+        function goHome() {
+            document.getElementById('homePage').style.display = 'flex';
+            document.getElementById('lessonPage').classList.remove('active');
+            document.getElementById('codeEditor').value = '';
+            document.getElementById('preview').srcdoc = '';
+            document.getElementById('chatSidebar').classList.remove('open');
+        }
+
+        function renderLesson() {
+            const lesson = lessons[currentLesson];
+            document.getElementById('lessonTitle').textContent = lesson.title;
+            document.getElementById('lessonExplanation').textContent = lesson.explanation;
+            
+            const templates = document.getElementById('templatesList');
+            templates.innerHTML = '';
+            
+            lesson.templates.forEach((tmpl) => {
+                const btn = document.createElement('button');
+                btn.className = 'template-btn';
+                btn.textContent = tmpl.label;
+                btn.onclick = () => {
+                    document.getElementById('codeEditor').value = tmpl.code;
+                };
+                templates.appendChild(btn);
+            });
+        }
+
+        function updatePreview() {
+            const code = document.getElementById('codeEditor').value;
+            document.getElementById('preview').srcdoc = code;
+        }
+
+        function resetLesson() {
+            document.getElementById('codeEditor').value = '';
+            document.getElementById('preview').srcdoc = '';
+        }
+
+        // CHAT
+        const coachResponses = {
+            'color': 'Change colors with background-color and color. Example: h1 { color: red; }',
+            'text': 'Use h1 for big titles, h2 for smaller titles, p for regular text.',
+            'organize': 'Use divs to arrange things. Think of them as boxes you put content in.',
+            'help': 'Click one of the examples! They show working code. Then click "See Your Page" to view it.',
+            'error': 'Check that all your tags are closed. Every opening tag needs a closing tag.',
+            'start': 'Click an example to get started! Then try changing the text, colors, or titles!'
+        };
+
+        function initChat() {
+            document.getElementById('chatMessages').innerHTML = '';
+            addBotMessage('Hi! I am your Helper. I can help you with colors, text, organizing, and anything else!');
+        }
+
+        function toggleChat() {
+            document.getElementById('chatSidebar').classList.toggle('open');
+        }
+
+        function sendChat() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addUserMessage(message);
+            input.value = '';
+            
+            setTimeout(() => {
+                const response = getCoachResponse(message.toLowerCase());
+                addBotMessage(response);
+            }, 300);
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendChat();
+            }
+        }
+
+        function addUserMessage(text) {
+            const chat = document.getElementById('chatMessages');
+            const msg = document.createElement('div');
+            msg.className = 'message user';
+            msg.textContent = text;
+            chat.appendChild(msg);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function addBotMessage(text) {
+            const chat = document.getElementById('chatMessages');
+            const msg = document.createElement('div');
+            msg.className = 'message bot';
+            msg.textContent = text;
+            chat.appendChild(msg);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function getCoachResponse(input) {
+            for (let key in coachResponses) {
+                if (input.includes(key)) {
+                    return coachResponses[key];
+                }
+            }
+            return 'Good question! Try clicking one of the examples to see working code. Ask me about colors, text, organizing, or errors!';
+        }
+
+        window.onload = renderLesson;
+    </script>
+</body>
+</html>
